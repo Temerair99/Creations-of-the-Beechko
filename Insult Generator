@@ -1,0 +1,70 @@
+#include <vector>
+#include <ctime>
+#include <string>
+#include <iostream>
+using namespace std;
+
+class Insults
+{
+public:
+    Insults();
+    string first();
+    string last();
+private:
+    vector<string>adj;
+    vector<string>noun;
+    
+    
+};
+//----------------------------------------------------------------------------------------
+string Insults::first()
+{
+    
+    adj.push_back("stupid");
+    adj.push_back("fucking");
+    adj.push_back("moronic");
+    adj.push_back("cross-eyed");
+    adj.push_back("deplorable");
+    adj.push_back("retarded");
+    adj.push_back("empty-headed");
+    adj.push_back("incompitent");
+    adj.push_back("useless");
+    adj.push_back("ugly");
+    adj.push_back("trashy");
+    adj.push_back("rachet");
+    adj.push_back("pretentious");
+    adj.push_back("dirty");
+    adj.push_back("skanky");
+    int i=time(0)%15 +1;
+    return adj[i];
+    
+}
+//-----------------------------------------------------------------------------------------
+string Insults::last()
+{
+    noun.push_back("fuck");
+    noun.push_back("ass-hat");
+    noun.push_back("cunt");
+    noun.push_back("idiot");
+    noun.push_back("cock-sucker");
+    noun.push_back("whore");
+    noun.push_back("duche");
+    noun.push_back("twat");
+    noun.push_back("redneck");
+    noun.push_back("disapointment");
+    noun.push_back("abortion-misshap");
+    int i=time(0)%11 +1;
+    return noun[i];
+}
+//-----------------------------------------------------------------------------------------
+Insults::Insults()
+{
+}
+//----------------------------------------------------------------------------------------
+int main()
+{
+    Insults n=Insults();
+    cout<<n.first()<<" "<<n.last()<<endl;
+}
+
+//for (char c='A'; c<='Z'; c++)
