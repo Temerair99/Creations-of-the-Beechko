@@ -1,0 +1,315 @@
+#include <vector>
+#include <ctime>
+#include <string>
+#include <iostream>
+using namespace std;
+//----------------------------------------------------------------------
+class Chance
+{
+public:
+    Chance(double p);//put in 55 for 55%
+    double getchance();
+private:
+    double percent;
+    
+};
+
+Chance::Chance(double p)
+{
+    percent=p;
+}
+
+double Chance::getchance()
+{
+    int i=time(0)%100 +1;
+    if(i<percent)
+    {return true;}
+    else
+    {return false;}
+    i=0;
+    
+}
+//--------------------------------------------------------------------
+class Person
+{
+public:
+    Person(string name, double health, double speed, double attack, double defence);
+    string getname();
+    double gethealth();
+    double getspeed();
+    double getattack();
+    double getdefence();
+    double takehit(Person p);
+    void display();
+private:
+    string n;
+    double hp, s, a, d;
+};
+Person::Person(string name, double health, double speed, double attack, double defence)
+{
+    n=name;
+    hp=health;
+    s=speed;
+    a=attack;
+    d=defence;
+}
+string Person::getname()
+{
+    return n;
+}
+double Person::gethealth()
+{
+    return hp;
+}
+double Person::getspeed()
+{
+    return s;
+}
+double Person::getattack()
+{
+    return a;
+}
+double Person::getdefence()
+{
+    return d;
+}
+double Person::takehit(Person p)
+{
+    double enemy=p.getspeed();
+    double h=s/enemy*100;
+    Chance q=Chance(h);
+    if(q.getchance()==true)
+    {
+        double w=p.getattack();
+        if(d<w)
+        {
+            w=w-d;
+        }
+        else
+        {
+            w=0;
+        }
+        hp=hp-w;
+    }
+   else
+    {
+        double w=0;
+        hp=hp-w;
+    }
+    return hp;
+}
+void Person::display()
+{
+    cout<<"    -"<<n<<"-"<<endl;
+    cout<<"0==|--------->"<<endl;
+    cout<<"Health:"<<hp<<endl;
+    cout<<"Speed:"<<s<<endl;
+    cout<<"Attack:"<<a<<endl;
+    cout<<"Defence:"<<d<<endl;
+    cout<<"0==|--------->"<<endl;
+    cout<<endl;
+}
+//-------------------------------------------------------------------------
+class Hero:public Person
+{
+public:
+    Hero(int level,int exp, string name, double health, double speed, double attack, double defence);
+    int levelup();
+    int addexp(int i);
+    int getexp();
+    int gethealth();
+    void display();
+private:
+    int level, exp, i;
+    string name;
+    double hp, s, a, d;
+};
+Hero::Hero(int level, int exp, string name, double health, double speed, double attack, double defence): Person(name, health, speed, attack, defence)
+{
+    this->level=level;
+    this->exp=exp;
+    this->name=name;
+    hp=health;
+    s=speed;
+    a=attack;
+    d=defence;
+}
+int Hero::levelup()
+{
+    string answer;
+    level=level+1;
+    cout<<"what do you want to increase?(attack, defence, speed, or health?"<<endl;
+    cin>>answer;
+    if(answer=="attack")
+    {
+        a=a+1;
+    }
+    if(answer=="defence")
+    {
+        d=d+1;
+    }
+    if(answer=="speed")
+    {
+        s=s+5;
+    }
+    if(answer=="health")
+    {
+        hp=hp+1;
+    }
+    return level;
+}
+int Hero::addexp(int i)
+{
+    this-> i=i;
+    exp=exp+i;
+    return exp;
+}
+int Hero::getexp()
+{
+    return exp;
+}
+int Hero::gethealth()
+{
+    return hp;
+}
+void Hero::display()
+{
+    cout<<"   -"<<name<<"-"<<endl;
+    cout<<"   -Level:"<<level<<"-"<<endl;
+    cout<<"   -EXP:"<<exp<<"-"<<endl;
+    cout<<"0==|--------->"<<endl;
+    cout<<"Health:"<<hp<<endl;
+    cout<<"Speed:"<<s<<endl;
+    cout<<"Attack:"<<a<<endl;
+    cout<<"Defence:"<<d<<endl;
+    cout<<"0==|--------->"<<endl;
+    cout<<endl;
+}
+//-----------------------------------------------------------------------------
+class Display
+{
+public:
+    Display();
+    void dbattle();
+    void dswords();
+    void dshield();
+};
+Display::Display()
+{}
+void Display::dbattle()
+{
+    cout<<"<><><><><><><><><><><><><><>"<<endl;
+    cout<<"   O /                / O   "<<endl;
+    cout<<" -/-/    FIGHT       /-/-   "<<endl;
+    cout<<" /)                   /(    "<<endl;
+    cout<<"^^^^^^^^^^^^^^^^^^^^^^^^^^^^"<<endl;
+    cout<<"<><><><><><><><><><><><><><>"<<endl;
+}
+void Display::dswords()
+{
+    cout<<"<><><><><><><><><><><><><><>"<<endl;
+    cout<<"    <==============}--O     "<<endl;
+    cout<<"    O--{==FIGHT=======>     "<<endl;
+    cout<<"    <==============}--O     "<<endl;
+    cout<<"    O--{==============>     "<<endl;
+    cout<<"<><><><><><><><><><><><><><>"<<endl;
+}
+void Display::dshield()
+{
+    cout<<"<><><><><><><><><><><><><><>"<<endl;
+    cout<<"FIGHT    *----*     FIGHT    "<<endl;
+    cout<<"         | || |              "<<endl;
+    cout<<"    FIGHT| || |FIGHT         "<<endl;
+    cout<<"         ( || )              "<<endl;
+    cout<<"FIGHT     (--)      FIGHT    "<<endl;
+    cout<<"<><><><><><><><><><><><><><>"<<endl;
+}
+//-----------------------------------------------------------------------------
+class Room
+{
+public:
+    Room(string difficulty);
+    Person enemy();
+private:
+    string difficulty;
+    
+};
+Room::Room(string difficulty)
+{
+    this->difficulty=difficulty;
+}
+Person Room::enemy()
+{
+    Person empty=Person("empty", 0, 0, 0, 0);
+    if(difficulty=="easy")
+    {
+        empty=Person("Joe", 5,60,4,2);
+    }
+    if(difficulty=="medium")
+    {
+        empty =Person("Mat", 7, 70, 5, 3);
+        
+    }
+    if(difficulty=="hard")
+    {
+        empty =Person("Luke", 8, 80, 5, 3);
+        
+    }
+    return empty;
+}
+
+//-----------------------------------------------------------------------------
+int main()
+{
+    Display display=Display();
+    cout<<"Enter the name of your hero"<<endl;
+    string pname;
+    cin>>pname;
+    Hero player=Hero(1, 0,pname, 10, 70, 4, 2);
+    player.display();
+    string action;
+        while(player.gethealth()>0)
+        {
+            if(player.getexp()>=100)
+            {
+                player.addexp(-100);
+                player.levelup();
+            }
+            cout<<"who do you want to fight?(easy, medium, or hard)"<<endl;
+            cin>>action;
+            Room a=Room(action);
+            Person A=a.enemy();
+            while(A.gethealth()>0&&player.gethealth()>0)
+            {
+                player.takehit(A);
+                A.takehit(player);
+            }
+            if(action=="easy")
+            {
+                display.dshield();
+                player.addexp(20);
+            }
+            if(action=="medium")
+            {
+                display.dbattle();
+                player.addexp(40);
+            }
+            if(action=="hard")
+            {
+                display.dswords();
+                player.addexp(60);
+            }
+            
+            player.display();
+            A.display();
+            if(player.gethealth()>A.gethealth())
+            {
+                cout<<"####"<<player.getname()<<" IS THE WINNER!"<<"####"<<endl;
+            }
+            else
+            {
+                cout<<"####"<<A.getname()<<" IS THE WINNER!"<<"####"<<endl;
+            }
+        }
+}
+
