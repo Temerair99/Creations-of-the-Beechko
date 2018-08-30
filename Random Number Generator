@@ -1,0 +1,35 @@
+//Created by: Andrew Beechko
+//8-30-18
+//C++ Code
+
+//this code is used to generate a vector of random numbers instantly that do not repeat. 
+
+#include <cmath>
+#include <iostream>
+#include <vector>
+#include <cassert>
+#include <algorithm>
+#include <ctime>
+
+using namespace std;
+
+int main()
+{
+    BinarySearchTree<int> mybst;
+    vector<int> myvec;
+    int k = time(0)%100+1;
+    for(int i=0;i<=50;i++)
+    {
+        srand(k);
+        int j=rand()%10 +1;
+        if(std::find(myvec.begin(), myvec.end(), j) == myvec.end())
+        {
+            myvec.push_back(j);
+        }
+        k++;
+    }
+    
+    for(int i=0; i<10; i++)
+    {
+        cout<<myvec[i]<<endl;
+    }
