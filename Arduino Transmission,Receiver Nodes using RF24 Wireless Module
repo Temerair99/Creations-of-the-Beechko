@@ -1,0 +1,108 @@
+//Andrew Beechko
+//12-9-18
+//Reciever Node
+#include <Servo.h>
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+//------------------------
+//Servo
+Servo myservo;
+int PWM = 9;
+//------------------------
+//wireless Chip
+RF24 radio(10,10);   //CSn
+const byte address[6] = "00001";
+void setup()
+{
+  radio.begin();
+  radio.openReadingPipe(0, address);
+  radio.setPALevel(RF24_PA_LOW);
+  radio.setDataRate(RF24_2MBPS);
+  myservo.attach(PWM);   //setting servo to D6 (SW in diagram)
+}
+void loop()
+{
+  delay(5);
+  radio.startListening();
+  if(radio.available())
+  {
+    while(radio.available())
+    {
+      int turnval = 0;
+      radio.read(&turnval, sizeof(turnval));
+      if(turnval == 1)
+      {
+        myservo.write(1350);
+        delay(500);
+      }
+      else if(turnval == 2)
+      {
+        myservo.write(1550);
+        delay(500);
+      }
+      else
+      {
+        myservo.write(1450);
+        delay(500);
+      }
+    }
+  }
+}
+//-----------------------------------------------------------------------------------------
+//Andrew Beechko
+//12-9-18
+//Transmitting Node
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+#include <Servo.h>
+//------------------------
+//Joy Stick
+int SW = 3;
+int VRY = A1;
+int VRX = A0;
+int xval = 0;
+int yval = 0;
+//-------------------------------
+RF24 radio(4,10);   //CSn
+const byte address[6] = "00001";
+void setup()
+{
+  radio.begin();
+  radio.openWritingPipe(address);
+  radio.setPALevel(RF24_PA_LOW);
+  radio.setDataRate(RF24_2MBPS);
+  Serial.begin(115200);
+  pinMode(SW, INPUT);
+}
+void loop() 
+{
+  int turnval = 0;
+  xval = analogRead(VRX);
+  yval = analogRead(VRY);
+  Serial.print("X-Axis: ");
+  Serial.print(xval);
+  Serial.print("\n");
+  Serial.print("Y-Axis: ");
+  Serial.print(yval);
+  Serial.print("\n");
+if(xval > 550)                 
+  {
+    turnval = 1;
+    radio.write(&turnval, sizeof(turnval));
+    delay(500);
+  }
+else if(xval < 480)                 //if VRY input isnt at rest, turn clockwise
+  {
+   turnval = 2;
+   radio.write(&turnval, sizeof(turnval));
+   delay(500);
+  }
+else
+  {
+    turnval = 0;
+    radio.write(&turnval, sizeof(turnval));
+    delay(500);
+  } 
+}
